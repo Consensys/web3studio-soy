@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "eslint": "^5.9.0",
-    "eslint-config-web3studio": "^0.0.1",
+    "eslint-config-web3studio": "^1.0.0",
     "husky": "^1.2.0",
     "lerna": "^3.5.0",
     "prettier": "^1.15.2",

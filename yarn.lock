@@ -1347,9 +1347,9 @@ eslint-config-prettier@^3.3.0:
   dependencies:
     get-stdin "^6.0.0"
 
-eslint-config-web3studio@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/eslint-config-web3studio/-/eslint-config-web3studio-0.0.1.tgz#98031a265d5fbc60615679af930092e179251258"
+eslint-config-web3studio@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-web3studio/-/eslint-config-web3studio-1.0.0.tgz#898f51e76f1a87f3706596a170d0886612519f95"
   dependencies:
     eslint-config-prettier "^3.3.0"
     eslint-plugin-jsdoc "^3.9.1"

@@ -9,7 +9,7 @@
     "hyperlane"
   ],
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "yarn truffle test"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,11 @@
   },
   "author": "Michael Barlock <barlockm@gmail.com>",
   "homepage": "https://github.com/ConsenSys/web3studio-hyperlane#readme",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "truffle": "^5.0.0-beta.2"
+  },
+  "dependencies": {
+    "@ensdomains/ens": "^0.1.1"
+  }
 }
