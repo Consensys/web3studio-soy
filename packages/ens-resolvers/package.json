@@ -9,7 +9,8 @@
     "hyperlane"
   ],
   "scripts": {
-    "test": "yarn truffle test"
+    "compile": "truffle compile",
+    "test": "solidity-coverage"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,9 @@
   "homepage": "https://github.com/ConsenSys/web3studio-hyperlane#readme",
   "license": "Apache-2.0",
   "devDependencies": {
+    "eth-ens-namehash": "^2.0.8",
+    "eth-gas-reporter": "^0.1.12",
+    "solidity-coverage": "^0.5.11",
     "truffle": "^5.0.0-beta.2"
   },
   "dependencies": {

@@ -2,6 +2,7 @@ pragma solidity ^0.4.18;
 
 import "@ensdomains/ens/contracts/ENS.sol";
 
+
 /**
  * A simple resolver anyone can use; only allows the owner of a node to set its
  * address.
@@ -42,7 +43,7 @@ contract PublicResolver {
   mapping (bytes32 => Record) records;
 
   modifier onlyOwner(bytes32 node) {
-    require(ens.owner(node) == msg.sender);
+    require(ens.owner(node) == msg.sender, "Only the owner may perform that action");
     _;
   }
 
@@ -96,8 +97,7 @@ contract PublicResolver {
    * @param data The ABI data.
    */
   function setABI(bytes32 node, uint256 contentType, bytes data) public onlyOwner(node) {
-    // Content types must be powers of 2
-    require(((contentType - 1) & contentType) == 0);
+    require(((contentType - 1) & contentType) == 0, "Content types must be powers of 2");
 
     records[node].abis[contentType] = data;
     emit ABIChanged(node, contentType);
@@ -154,6 +154,7 @@ contract PublicResolver {
    * @return contentType The content type of the return value
    * @return data The ABI data
    */
+  /* solium-disable-next-line mixedcase */
   function ABI(bytes32 node, uint256 contentTypes) public view returns (uint256 contentType, bytes data) {
     Record storage record = records[node];
     for (contentType = 1; contentType <= contentTypes; contentType <<= 1) {
@@ -199,12 +200,13 @@ contract PublicResolver {
    * @return True if the contract implements the requested interface.
    */
   function supportsInterface(bytes4 interfaceID) public pure returns (bool) {
+    /* solium-disable-next-line operator-whitespace */
     return interfaceID == ADDR_INTERFACE_ID ||
-    interfaceID == NAME_INTERFACE_ID ||
-    interfaceID == ABI_INTERFACE_ID ||
-    interfaceID == PUBKEY_INTERFACE_ID ||
-    interfaceID == TEXT_INTERFACE_ID ||
-    interfaceID == CONTENTHASH_INTERFACE_ID ||
-    interfaceID == INTERFACE_META_ID;
+      interfaceID == NAME_INTERFACE_ID ||
+      interfaceID == ABI_INTERFACE_ID ||
+      interfaceID == PUBKEY_INTERFACE_ID ||
+      interfaceID == TEXT_INTERFACE_ID ||
+      interfaceID == CONTENTHASH_INTERFACE_ID ||
+      interfaceID == INTERFACE_META_ID;
   }
 }

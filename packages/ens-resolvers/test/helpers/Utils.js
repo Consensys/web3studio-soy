@@ -1,5 +1,12 @@
+/**
+ * Checks if an error is a truffle one
+ *
+ * @param {Error} error - The error
+ * @returns {boolean} - If the error is an exception
+ */
 function isException(error) {
-  let strError = error.toString();
+  const strError = error.toString();
+
   return (
     strError.includes('invalid opcode') ||
     strError.includes('invalid JUMP') ||
@@ -7,6 +14,11 @@ function isException(error) {
   );
 }
 
+/**
+ * Ensures that this is a valid truffle exception
+ *
+ * @param {Error} error - The error
+ */
 function ensureException(error) {
   assert(isException(error), error.toString());
 }
