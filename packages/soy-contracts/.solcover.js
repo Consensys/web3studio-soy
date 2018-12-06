@@ -1,4 +1,4 @@
 module.exports = {
   skipFiles: ['TestSetup.sol'],
-  copyPackages: ['@ensdomains/resolver']
+  copyPackages: ['@ensdomains/resolver', '@ensdomains/ens']
 };
