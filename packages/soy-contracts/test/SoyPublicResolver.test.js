@@ -1,5 +1,5 @@
 const ENS = artifacts.require('@ensdomains/ens/contracts/ENSRegistry.sol');
-const PublicResolver = artifacts.require('PublicResolver.sol');
+const PublicResolver = artifacts.require('SoyPublicResolver.sol');
 
 const utils = require('./helpers/Utils.js');
 const namehash = require('eth-ens-namehash');
@@ -19,7 +19,7 @@ function assertPubKey(actual, expectedPoints) {
   });
 }
 
-contract('PublicResolver', function(accounts) {
+contract('SoyPublicResolver', function(accounts) {
   let node;
   let ens, resolver;
 

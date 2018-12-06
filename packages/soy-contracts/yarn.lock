@@ -13,6 +13,10 @@
     testrpc "0.0.1"
     web3-utils "^1.0.0-beta.31"
 
+"@ensdomains/resolver@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@ensdomains/resolver/-/resolver-0.1.0.tgz#ac9bf2710acacac16b6b1910d71beb24b8f99fac"
+
 "@types/concat-stream@^1.6.0":
   version "1.6.0"
   resolved "http://registry.npmjs.org/@types/concat-stream/-/concat-stream-1.6.0.tgz#394dbe0bb5fee46b38d896735e8b68ef2390d00d"

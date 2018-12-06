@@ -1,12 +1,12 @@
 {
-  "name": "ens-resolvers",
+  "name": "soy-contracts",
   "version": "0.0.0",
   "main": "index.js",
-  "description": "ENS resolvers for hyperlane",
+  "description": "ENS resolvers for soy",
   "keywords": [
     "truffle",
     "ens",
-    "hyperlane"
+    "soy"
   ],
   "scripts": {
     "compile": "truffle compile",
@@ -14,13 +14,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ConsenSys/web3studio-hyperlane.git"
+    "url": "git+https://github.com/ConsenSys/web3studio-soy.git"
   },
   "bugs": {
-    "url": "https://github.com/ConsenSys/web3studio-hyperlane/issues"
+    "url": "https://github.com/ConsenSys/web3studio-soy/issues"
   },
   "author": "Michael Barlock <barlockm@gmail.com>",
-  "homepage": "https://github.com/ConsenSys/web3studio-hyperlane#readme",
+  "homepage": "https://github.com/ConsenSys/web3studio-soy#readme",
   "license": "Apache-2.0",
   "devDependencies": {
     "eth-ens-namehash": "^2.0.8",
@@ -29,6 +29,7 @@
     "truffle": "^5.0.0-beta.2"
   },
   "dependencies": {
-    "@ensdomains/ens": "^0.1.1"
+    "@ensdomains/ens": "^0.1.1",
+    "@ensdomains/resolver": "^0.1.0"
   }
 }
