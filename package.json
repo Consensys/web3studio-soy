@@ -2,17 +2,20 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "test": "yarn lint",
-    "lint": "eslint .",
-    "prettier": "prettier \"**/*.{js,json,css,md}\" --write"
+    "test": "yarn lint && yarn test:packages",
+    "test:packages": "yarn lerna run test",
+    "lint": "yarn eslint . && yarn solium -d .",
+    "prettier": "prettier \"**/*.{js,json,css,md}\" --write",
+    "postinstall": "lerna bootstrap"
   },
   "devDependencies": {
     "eslint": "^5.9.0",
-    "eslint-config-web3studio": "^0.0.1",
+    "eslint-config-web3studio": "^1.1.0",
     "husky": "^1.2.0",
     "lerna": "^3.5.0",
     "prettier": "^1.15.2",
-    "pretty-quick": "^1.8.0"
+    "pretty-quick": "^1.8.0",
+    "solium": "^1.1.8"
   },
   "husky": {
     "hooks": {
