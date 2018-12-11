@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "start": "concurrently --kill-others-on-fail -n w: npm:start:*",
-    "start:ganache": "yarn ganache-cli -i 42 -b 1 -d",
+    "start:ganache": "ganache-cli -i 42 -b 1 -d",
     "start:migrate": "yarn truffle migrate --reset && yarn truffle exec scripts/ens.js",
     "build": "truffle compile",
     "test": "solidity-coverage"
@@ -34,7 +34,6 @@
     "@ensdomains/resolver": "^0.1.0",
     "eth-ens-namehash": "^2.0.8",
     "eth-gas-reporter": "^0.1.12",
-    "ganache-cli": "^6.2.3",
     "pako": "^1.0.7",
     "solidity-coverage": "^0.5.11",
     "truffle": "^5.0.0"

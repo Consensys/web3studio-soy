@@ -5,26 +5,20 @@
   "author": "Michael Barlock <barlockm@gmail.com>",
   "homepage": "https://github.com/ConsenSys/web3studio-soy#readme",
   "license": "Apache-2.0",
-  "main": "src/server.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ConsenSys/web3studio-soy.git"
   },
   "scripts": {
-    "start": "nodemon src/server.js"
+    "test": "jest",
+    "jest": "jest"
   },
   "bugs": {
     "url": "https://github.com/ConsenSys/web3studio-soy/issues"
   },
   "dependencies": {
     "eth-ens-namehash": "^2.0.8",
-    "http-proxy": "^1.17.0",
-    "koa": "^2.6.2",
     "soy-contracts": "^0.0.0",
-    "truffle-contract": "^4.0.0",
     "web3": "^1.0.0-beta.37"
-  },
-  "devDependencies": {
-    "nodemon": "^1.18.7"
   }
 }
