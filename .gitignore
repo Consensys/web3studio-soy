@@ -4,4 +4,4 @@ build/
 coverage/
 coverage.json
 .env
-
+packaged.yaml

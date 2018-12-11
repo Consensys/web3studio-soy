@@ -10,6 +10,11 @@
     "url": "git+https://github.com/ConsenSys/web3studio-soy.git"
   },
   "scripts": {
+    "start": "yarn lambda:build && sam local invoke SoyViewerRequestFunction --event test/fixtures/cf-request.json",
+    "sam:deploy": "sam deploy --template-file packaged.yaml --stack-name soy-gateway-edge --capabilities CAPABILITY_IAM",
+    "sam:package": "sam package --template-file template.yaml --output-template-file packaged.yaml --s3-bucket web3studio-lambdas",
+    "lambda:build": "rm -rf ./build/lambdas && lambda-tools-build -s soy-edge -n 8.10 -w scripts/transformWebpack -o ./build/lambdas src/lambdas",
+    "lambda:deploy": "yarn lambda:build && yarn sam:package && yarn sam:deploy",
     "test": "jest",
     "jest": "jest"
   },
@@ -20,5 +25,11 @@
     "eth-ens-namehash": "^2.0.8",
     "soy-contracts": "^0.0.0",
     "web3": "^1.0.0-beta.37"
+  },
+  "devDependencies": {
+    "@lifeomic/lambda-tools": "^5.1.1",
+    "dotenv": "^6.2.0",
+    "nodemon": "^1.18.7",
+    "webpack-bundle-analyzer": "^3.0.3"
   }
 }
