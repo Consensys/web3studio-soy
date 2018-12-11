@@ -1,0 +1,124 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Soy Gateway Edge
+
+Parameters:
+  AcmCertificateArn:
+    Description: The ARN of a certificate from AWS Certificate Manager (ACM)
+    Default: arn:aws:acm:us-east-1:066707434473:certificate/08388f22-ad8a-4889-803b-2b30f84a4783
+    Type: String
+
+  Stage:
+    Description: Deployment stage
+    Type: String
+    Default: Prod
+
+  CloudFrontCNAME:
+    Description: Custom domain name to use (eth.soy).
+    Type: List<String>
+    Default: 'eth.soy,*.eth.soy'
+
+  Route53HostedZoneId:
+    Description: Hosted Route53 ZoneID
+    Default: Z8QV0PYI2G4SG
+    Type: String
+
+Resources:
+  SoyEdgeFunctionIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - edgelambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: 'root'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: 'arn:aws:logs:*:*:*'
+
+  SoyViewerRequestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: build/lambdas/viewerRequest.js
+      Handler: index.handler
+      MemorySize: 128
+      Timeout: 5
+      Runtime: nodejs8.10
+      AutoPublishAlias: live
+      Role: !GetAtt SoyEdgeFunctionIAMRole.Arn
+
+  SoyOriginRequestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: build/lambdas/originRequest.js
+      Handler: index.handler
+      MemorySize: 128
+      Timeout: 5
+      Runtime: nodejs8.10
+      AutoPublishAlias: live
+      Role: !GetAtt SoyEdgeFunctionIAMRole.Arn
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Aliases: !Ref CloudFrontCNAME
+        Origins:
+          - CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols:
+                - TLSv1
+                - TLSv1.1
+                - TLSv1.2
+            DomainName: ipfs.infura.io
+            Id: ipfs-infura-io
+        ViewerCertificate:
+          SslSupportMethod: sni-only
+          AcmCertificateArn: !Ref AcmCertificateArn
+        DefaultCacheBehavior:
+          TargetOriginId: ipfs-infura-io
+          ViewerProtocolPolicy: allow-all # need SAN cert for multi level ssl
+          Compress: true
+          MaxTTL: 86400 # 24 hours
+          DefaultTTL: 86400 # 24 hours
+          MinTTL: 900 # 15 minutes
+          ForwardedValues:
+            Headers: ['X-Ipfs-Path']
+            Cookies:
+              Forward: none
+            QueryString: false
+          LambdaFunctionAssociations:
+            - EventType: viewer-request
+              LambdaFunctionARN: !Ref SoyViewerRequestFunction.Version
+            - EventType: origin-request
+              LambdaFunctionARN: !Ref SoyOriginRequestFunction.Version
+
+  DNS:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      Comment: !Ref 'AWS::StackName'
+      HostedZoneId: !Ref Route53HostedZoneId
+      RecordSets:
+        - Name: !Select [0, !Ref CloudFrontCNAME]
+          Type: A
+          AliasTarget:
+            HostedZoneId: Z2FDTNDATAQYW2 # ZoneID for CloudFront
+            DNSName: !GetAtt Distribution.DomainName
+        - Name: !Select [1, !Ref CloudFrontCNAME]
+          Type: A
+          AliasTarget:
+            HostedZoneId: Z2FDTNDATAQYW2 # ZoneID for CloudFront
+            DNSName: !GetAtt Distribution.DomainName
