@@ -488,10 +488,10 @@ contract('SoyPublicResolver', function(accounts) {
     it('can perform a blue/green deploy', async () => {
       await resolver.setDefaultAlias(node, 'green');
 
-      await resolver.publishRevision(node, contentHash1, fromAccount0);
+      await resolver.publishRevision(node, contentHash1);
       expect(await resolver.contenthash(node)).toBe(contentHash1);
 
-      await resolver.publishRevision(node, contentHash2, 'blue', fromAccount0);
+      await resolver.publishRevision(node, contentHash2, 'blue');
 
       expect(await resolver.contenthash(node)).toBe(contentHash1);
 
