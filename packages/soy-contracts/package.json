@@ -12,7 +12,7 @@
     "start": "concurrently --kill-others-on-fail -n w: npm:start:*",
     "start:ganache": "yarn ganache-cli -i 42 -b 1 -d",
     "start:migrate": "yarn truffle migrate --reset && yarn truffle exec scripts/ens.js",
-    "compile": "truffle compile",
+    "build": "truffle compile",
     "test": "solidity-coverage"
   },
   "repository": {
@@ -27,7 +27,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "eth-ens-namehash": "^2.0.8",
-    "truffle-contract": "^4.0.0-beta.2"
+    "truffle-contract": "^4.0.0"
   },
   "devDependencies": {
     "@ensdomains/ens": "^0.1.1",
@@ -37,6 +37,6 @@
     "ganache-cli": "^6.2.3",
     "pako": "^1.0.7",
     "solidity-coverage": "^0.5.11",
-    "truffle": "^5.0.0-beta.2"
+    "truffle": "^5.0.0"
   }
 }

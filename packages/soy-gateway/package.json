@@ -21,8 +21,8 @@
     "http-proxy": "^1.17.0",
     "koa": "^2.6.2",
     "soy-contracts": "^0.0.0",
-    "truffle-contract": "^3.0.6",
-    "web3": "^1.0.0-beta.36"
+    "truffle-contract": "^4.0.0",
+    "web3": "^1.0.0-beta.37"
   },
   "devDependencies": {
     "nodemon": "^1.18.7"
