@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/ConsenSys/web3studio-soy/issues"
   },
-  "author": "Michael Barlock <barlockm@gmail.com>",
+  "author": "Web3Studio Developers <web3studio@consensys.net>",
   "homepage": "https://github.com/ConsenSys/web3studio-soy#readme",
   "license": "Apache-2.0",
   "dependencies": {

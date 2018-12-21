@@ -3,15 +3,15 @@ module.exports = {
     '^.+\\.js$': 'babel-jest'
   },
   testPathIgnorePatterns: ['/node_modules', '/test/'],
-  testEnvironment: 'soy-core/test/GanacheEnvironment.js',
+  testEnvironment: './test/GanacheEnvironment.js',
   collectCoverageFrom: ['src/**/*.js', '!src/setupJest.js'],
   collectCoverage: true,
   coverageThreshold: {
     global: {
-      branches: 100,
+      statements: 95,
+      branches: 65,
       functions: 100,
-      lines: 100,
-      statements: 100
+      lines: 95
     }
   }
 };

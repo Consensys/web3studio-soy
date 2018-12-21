@@ -1,8 +1,8 @@
+const Soy = require('soy-core');
 const config = require('../config');
-const ENS = require('../helpers/Ens');
 
 const { registryAddress, ensTld, provider } = config();
-const ens = new ENS(provider, registryAddress);
+const soy = new Soy({ provider, registryAddress });
 const ipfsPattern = /^(\/ipfs\/Qm\w{44})(\/?.*)$/;
 
 /**
@@ -55,7 +55,7 @@ exports.handler = async event => {
     const ensDomain = `${host.replace('.eth.soy', '')}.${ensTld}`;
 
     try {
-      let ipfsRoot = await ens.resolveContenthash(ensDomain);
+      let ipfsRoot = await soy.ens.resolveContenthash(ensDomain);
 
       ipfsRoot = ipfsRoot.endsWith('/') ? ipfsRoot.slice(0, -1) : ipfsRoot;
 

@@ -8,6 +8,7 @@ import "@ensdomains/resolver/contracts/PublicResolver.sol";
  * address.
  */
 contract SoyPublicResolver is PublicResolver {
+  string public version = "0.0.0";
 
   event DefaultAliasChanged(bytes32 indexed defaultAlias, string name);
   event RevisionPublished(bytes32 indexed node, bytes hash);

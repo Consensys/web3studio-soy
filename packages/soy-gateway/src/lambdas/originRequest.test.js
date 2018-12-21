@@ -1,5 +1,8 @@
 const originHandler = require('./originRequest').handler;
-const EnsSetup = require('../../test/EnsSetup');
+const {
+  setupEnsContracts,
+  registerAndPublishRevision
+} = require('soy-core/test/setup');
 const cfRequestEvent = require('../../test/fixtures/cf-request');
 
 describe('Origin Request Lambda', () => {
@@ -39,11 +42,11 @@ describe('Origin Request Lambda', () => {
   };
 
   beforeAll(async () => {
-    const ensSetup = new EnsSetup('test');
+    const soy = await setupEnsContracts(web3, 'test', { from: accounts[0] });
 
-    global.testRegistryAddress = await ensSetup.createRegistry();
-    await ensSetup.register('web3studio', contentHash);
+    await registerAndPublishRevision(soy, 'web3studio.test', contentHash);
 
+    global.testRegistryAddress = (await soy.registryContract()).address;
     const lambda = require('./viewerRequest');
     viewerHandler = lambda.handler;
   });

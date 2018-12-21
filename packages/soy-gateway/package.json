@@ -22,9 +22,8 @@
     "url": "https://github.com/ConsenSys/web3studio-soy/issues"
   },
   "dependencies": {
-    "eth-ens-namehash": "^2.0.8",
-    "soy-contracts": "^0.0.0",
-    "web3": "^1.0.0-beta.37"
+    "soy-core": "^0.0.0",
+    "web3": "1.0.0-beta.37"
   },
   "devDependencies": {
     "@lifeomic/lambda-tools": "^5.1.1",
