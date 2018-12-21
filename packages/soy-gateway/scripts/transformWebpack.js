@@ -20,6 +20,7 @@ const resolveModule = modulePath =>
 const testPattern = /\.test\.js$/;
 
 module.exports = config => {
+  config.devtool = 'cheap-source-map';
   // Remove test entries from being built
   config.entry = Object.entries(config.entry).reduce(
     (entry, [file, entries]) => {
@@ -46,6 +47,7 @@ module.exports = config => {
 
     // Web3@1 locks versions, this de-dupes the bundle
     'bn.js': resolveModule('bn.js'),
+    elliptic: resolveModule('elliptic'),
     'web3-core-helpers': resolveModule('web3-core-helpers'),
     'web3-core-method': resolveModule('web3-core-method'),
     'web3-core-subscriptions': resolveModule('web3-core-subscriptions'),

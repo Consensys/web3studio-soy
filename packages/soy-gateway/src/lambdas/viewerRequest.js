@@ -55,7 +55,7 @@ exports.handler = async event => {
     const ensDomain = `${host.replace('.eth.soy', '')}.${ensTld}`;
 
     try {
-      let ipfsRoot = await soy.ens.resolveContenthash(ensDomain);
+      let ipfsRoot = await soy.ens.getContentHash(ensDomain);
 
       ipfsRoot = ipfsRoot.endsWith('/') ? ipfsRoot.slice(0, -1) : ipfsRoot;
 

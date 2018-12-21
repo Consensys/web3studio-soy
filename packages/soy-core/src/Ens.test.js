@@ -1,3 +1,4 @@
+const { SoyPublicResolver } = require('soy-contracts');
 const Ens = require('./Ens');
 const {
   setupEnsContracts,
@@ -17,27 +18,32 @@ describe('ENS utility', () => {
     const soy = await setupEnsContracts(web3, 'test', { from: accounts[0] });
 
     await registerAndPublishRevision(soy, domain, contentHash);
-    registryAddress = (await soy.registryContract()).address;
+    registryAddress = (await soy.ens.registry()).address;
   });
 
   beforeEach(() => {
     ens = new Ens(web3.currentProvider, registryAddress);
   });
 
-  it('it sets the domain path to an ipfs-path passed as a header', async () => {
-    expect(await ens.resolveContenthash(domain)).toBe(contentHash);
+  it('it resolves a domain to a contract', async () => {
+    expect(await ens.resolver(domain)).toBeInstanceOf(SoyPublicResolver);
+  });
+
+  it('it resolves a domain to a contentHash', async () => {
+    expect(await ens.getContentHash(domain)).toBe(contentHash);
   });
 
   it('Caches the resolved node', async () => {
-    const resolveNodeSpy = jest.spyOn(ens, '_resolveNode');
+    const registry = await ens.registry();
+    const registryResolveSpy = jest.spyOn(registry, 'resolver');
 
-    await ens.resolveContenthash(domain);
-    expect(resolveNodeSpy).toHaveBeenCalledTimes(1);
-    await ens.resolveContenthash(domain);
-    expect(resolveNodeSpy).toHaveBeenCalledTimes(1);
+    await ens.getContentHash(domain);
+    expect(registryResolveSpy).toHaveBeenCalledTimes(1);
+    await ens.getContentHash(domain);
+    expect(registryResolveSpy).toHaveBeenCalledTimes(1);
   });
 
   it('Caches the ens registry contract', async () => {
-    expect(await ens._getEnsContract()).toBe(await ens._getEnsContract());
+    expect(await ens.registry()).toBe(await ens.registry());
   });
 });

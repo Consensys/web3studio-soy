@@ -21,7 +21,7 @@ describe('Viewer Request Lambda', () => {
       `${contentHash}/`
     );
 
-    global.testRegistryAddress = (await soy.registryContract()).address;
+    global.testRegistryAddress = (await soy.ens.registry()).address;
     const lambda = require('./viewerRequest');
     handler = lambda.handler;
   });
