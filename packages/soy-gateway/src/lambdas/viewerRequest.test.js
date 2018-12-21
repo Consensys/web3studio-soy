@@ -1,4 +1,7 @@
-const EnsSetup = require('../../test/EnsSetup');
+const {
+  setupEnsContracts,
+  registerAndPublishRevision
+} = require('soy-core/test/setup');
 const cfRequestEvent = require('../../test/fixtures/cf-request');
 
 describe('Viewer Request Lambda', () => {
@@ -9,12 +12,16 @@ describe('Viewer Request Lambda', () => {
   let request;
 
   beforeAll(async () => {
-    const ensSetup = new EnsSetup('test');
+    const soy = await setupEnsContracts(web3, 'test', { from: accounts[0] });
 
-    global.testRegistryAddress = await ensSetup.createRegistry();
-    await ensSetup.register('web3studio', contentHash);
-    await ensSetup.register('trailing-slash', `${contentHash}/`);
+    await registerAndPublishRevision(soy, 'web3studio.test', contentHash);
+    await registerAndPublishRevision(
+      soy,
+      'trailing-slash.test',
+      `${contentHash}/`
+    );
 
+    global.testRegistryAddress = (await soy.registryContract()).address;
     const lambda = require('./viewerRequest');
     handler = lambda.handler;
   });

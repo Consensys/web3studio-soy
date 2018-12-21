@@ -1,5 +1,5 @@
 const Web3 = require('web3');
-const ENS = require('../helpers/Ens');
+const Soy = require('soy-core');
 
 const infuraApiKey = process.env.INFURA_API_KEY;
 const infuraNetwork = process.env.INFURA_NETWORK;
@@ -23,7 +23,7 @@ const provider = web3
 // istanbul ignore next
 const registryAddress = testRegistryAddress || null;
 
-const ens = new ENS(provider, registryAddress);
+const soy = new Soy({ provider, registryAddress });
 const ipfsPattern = /^(\/ipfs\/Qm\w{44})(\/?.*)$/;
 
 /**
@@ -76,7 +76,7 @@ exports.handler = async event => {
     const ensDomain = `${host.replace('.eth.soy', '')}.${ensTld}`;
 
     try {
-      let ipfsRoot = await ens.resolveContenthash(ensDomain);
+      let ipfsRoot = await soy.ens.resolveContenthash(ensDomain);
 
       ipfsRoot = ipfsRoot.endsWith('/') ? ipfsRoot.slice(0, -1) : ipfsRoot;
 
