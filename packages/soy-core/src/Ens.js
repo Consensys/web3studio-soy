@@ -64,14 +64,22 @@ class Ens {
     };
   }
 
+  async resolveContract(domain) {
+    const node = namehash.hash(domain);
+
+    const { resolver } = await this._resolveNode(node);
+
+    return resolver;
+  }
+
   /**
    * Resolves the content hash for a node name
    *
-   * @param {string} name - The name of a node
+   * @param {string} domain - The name of a node
    * @returns {Promise<string>} - The content hash of the node
    */
-  async resolveContenthash(name) {
-    const node = namehash.hash(name);
+  async resolveContenthash(domain) {
+    const node = namehash.hash(domain);
     const key = `${node}::contenthash`;
     const cachedHash = this._cache.get(key);
 

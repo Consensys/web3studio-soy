@@ -104,7 +104,7 @@ class Soy {
    */
   async getNodeResolver(domain) {
     const node = namehash.hash(domain);
-    const resolver = await this.resolverContract();
+    const resolver = await this.ens.resolveContract(domain);
 
     return createNodeContract(node, resolver.address);
   }
