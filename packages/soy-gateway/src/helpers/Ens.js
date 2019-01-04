@@ -17,25 +17,41 @@ class EnsResolver {
   constructor(provider, registryAddress) {
     this._cache = new Cache();
     this._defaultTTL = 10; //seconds
-    this._provider =
-      provider || new Web3.providers.HttpProvider('http://localhost:8545');
 
-    SoyPublicResolver.setProvider(this._provider);
-    ENS.setProvider(this._provider);
+    SoyPublicResolver.setProvider(provider);
+    ENS.setProvider(provider);
+
     this._registryAddress = registryAddress;
+    this._ensContract = null;
   }
 
   /**
-   * Resolves a namehashed node to it's resolver contract and ttl
+   * Creates or returns an ENS registry contract
    *
+   * @returns {Promise<Contract>} - A promise for a registry contract
    * @private
+   */
+  async _getEnsContract() {
+    if (!this._ensContract) {
+      this._ensContract = await (this._registryAddress
+        ? ENS.at(this._registryAddress)
+        : // Can't easily fake a deployed test network
+          // istanbul ignore next
+          ENS.deployed());
+    }
+
+    return this._ensContract;
+  }
+
+  /**
+   * Resolves a namehash'ed node to it's resolver contract and ttl
+   *
    * @param {string} node - namehashed node
    * @returns {Promise<{resolver, ttl: *}>} - resolver and ttl for node
+   * @private
    */
   async _resolveNode(node) {
-    const ens = await (this._registryAddress
-      ? ENS.at(this._registryAddress)
-      : ENS.deployed());
+    const ens = await this._getEnsContract();
 
     const [resolverAddress, ttl] = await Promise.all([
       ens.resolver.call(node),
@@ -64,8 +80,7 @@ class EnsResolver {
     }
 
     const { resolver, ttl } = await this._resolveNode(node);
-    const hash = Web3.utils.hexToAscii(await resolver.contenthash(node));
-
+    const hash = Web3.utils.hexToAscii(await resolver.contenthash.call(node));
     this._cache.set(key, hash, ttl * 1000);
 
     return hash;
