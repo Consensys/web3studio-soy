@@ -68,6 +68,9 @@ module.exports = config => {
   // Lambda@Edge doesn't support env variables, injecting them at build time instead
   config.plugins.push(
     new DefinePlugin({
+      'process.env.NODE_CONFIG_ENV': JSON.stringify(
+        process.env.NODE_CONFIG_ENV
+      ),
       'process.env.INFURA_API_KEY': JSON.stringify(process.env.INFURA_API_KEY),
       'process.env.INFURA_NETWORK': JSON.stringify(process.env.INFURA_NETWORK)
     })

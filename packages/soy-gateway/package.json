@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "eth-ens-namehash": "^2.0.8",
-    "lodash": "^4.17.11",
     "soy-contracts": "^0.0.0",
     "web3": "^1.0.0-beta.37"
   },

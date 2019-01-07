@@ -1,39 +1,7 @@
-const Web3 = require('web3');
-const get = require('lodash/get');
+const config = require('../config');
 const ENS = require('../helpers/Ens');
 
-const infuraApiKey = process.env.INFURA_API_KEY;
-
-// If the env variable isn't passed, assume we're in a test (ganache) environment
-const network = get(process.env, 'INFURA_NETWORK', 'ganache');
-
-// Branch and error are used to detect a misconfiguration in a mainnet environment
-// istanbul ignore next
-if (network === 'mainnet' && !infuraApiKey) {
-  throw new Error(
-    'Configuration error: `mainnnet` `INFURA_NETWORK` requires an `INFURA_API_KEY`'
-  );
-}
-
-// use `.eth` tld for mainnet, `.test` for all others
-// Branch required for test setup, can't test itself
-// istanbul ignore next
-const ensTld = network === 'mainnet' ? 'eth' : 'test';
-
-const { web3, testRegistryAddress } = global;
-
-const provider = get(
-  web3,
-  'currentProvider',
-  new Web3.providers.HttpProvider(
-    `https://${network}.infura.io/v3/${infuraApiKey}`
-  )
-);
-
-// Branch required for test setup, can't test itself
-// istanbul ignore next
-const registryAddress = testRegistryAddress || null;
-
+const { registryAddress, ensTld, provider } = config();
 const ens = new ENS(provider, registryAddress);
 const ipfsPattern = /^(\/ipfs\/Qm\w{44})(\/?.*)$/;
 
