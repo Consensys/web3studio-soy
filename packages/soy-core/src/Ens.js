@@ -22,7 +22,32 @@ class Ens {
     ENS.setProvider(provider);
 
     this._registryAddress = registryAddress;
-    this._ensContract = null;
+    this._registryContract = null;
+  }
+
+  /**
+   * Memoize a function call based on the ens contract's ttl
+   *
+   * @param {Function} fn - function to be memoized
+   * @param {string} name - cache key, name of the function
+   * @param {string} node - node to associate with a ttl
+   * @param {Function=} maxAgeFn - Optional function to calculate a ttl
+   * @returns {Promise<*>} - returns the maybe cached value of the function
+   * @private
+   */
+  async _memoize(fn, name, node, maxAgeFn = () => this._getNodeTTL(node)) {
+    const key = `${node}::${name}`;
+    const cachedValue = this._cache.get(key);
+
+    if (cachedValue) {
+      return cachedValue;
+    }
+
+    const value = await fn();
+
+    this._cache.set(key, value, await maxAgeFn(value));
+
+    return value;
   }
 
   /**
@@ -31,16 +56,16 @@ class Ens {
    * @returns {Promise<Contract>} - A promise for a registry contract
    * @private
    */
-  async _getEnsContract() {
-    if (!this._ensContract) {
-      this._ensContract = await (this._registryAddress
+  async registry() {
+    if (!this._registryContract) {
+      this._registryContract = await (this._registryAddress
         ? ENS.at(this._registryAddress)
         : // Can't easily fake a deployed test network
           // istanbul ignore next
           ENS.deployed());
     }
 
-    return this._ensContract;
+    return this._registryContract;
   }
 
   /**
@@ -50,40 +75,69 @@ class Ens {
    * @returns {Promise<{resolver, ttl: *}>} - resolver and ttl for node
    * @private
    */
-  async _resolveNode(node) {
-    const ens = await this._getEnsContract();
+  async _getNodeResolverAddress(node) {
+    return this._memoize(
+      async () => {
+        const registry = await this.registry();
 
-    const [resolverAddress, ttl] = await Promise.all([
-      ens.resolver.call(node),
-      ens.ttl.call(node)
-    ]);
+        return registry.resolver(node);
+      },
+      'nodeResolverAddress',
+      node
+    );
+  }
 
-    return {
-      resolver: await SoyPublicResolver.at(resolverAddress),
-      ttl: ttl.toNumber()
-    };
+  /**
+   * Get the ttl of a node, updates every ttl
+   *
+   * @param {string} node - ens node
+   * @returns {Promise<number>} - the ttl of the node
+   * @private
+   */
+  async _getNodeTTL(node) {
+    return this._memoize(
+      async () => {
+        const registry = await this.registry();
+        const ttl = await registry.ttl(node);
+
+        return ttl.toNumber() * 1000;
+      },
+      'ttl',
+      node,
+      ttl => ttl
+    );
+  }
+
+  /**
+   * Gets the resolver contract for a specific domain
+   *
+   * @param {string} domain - ens domain
+   * @returns {Promise<SoyPublicResolver>} - Resolver for a domain
+   */
+  async resolver(domain) {
+    const node = namehash.hash(domain);
+    const resolverAddress = await this._getNodeResolverAddress(node);
+
+    return SoyPublicResolver.at(resolverAddress);
   }
 
   /**
    * Resolves the content hash for a node name
    *
-   * @param {string} name - The name of a node
+   * @param {string} domain - The domain of a node
    * @returns {Promise<string>} - The content hash of the node
    */
-  async resolveContenthash(name) {
-    const node = namehash.hash(name);
-    const key = `${node}::contenthash`;
-    const cachedHash = this._cache.get(key);
+  async getContentHash(domain) {
+    const node = namehash.hash(domain);
 
-    if (cachedHash) {
-      return cachedHash;
-    }
-
-    const { resolver, ttl } = await this._resolveNode(node);
-    const hash = Web3.utils.hexToAscii(await resolver.contenthash(node));
-    this._cache.set(key, hash, ttl * 1000);
-
-    return hash;
+    return this._memoize(
+      async () => {
+        const resolver = await this.resolver(domain);
+        return Web3.utils.hexToAscii(await resolver.contenthash(node));
+      },
+      'contenthash',
+      node
+    );
   }
 }
 

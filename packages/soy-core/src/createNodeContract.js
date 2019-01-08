@@ -1,20 +1,20 @@
-const { SoyPublicResolver } = require('soy-contracts');
+const namehash = require('eth-ens-namehash');
 const Web3 = require('web3');
 const uniq = require('lodash/uniq');
 
 /**
  * Create a unique contract instance with common params filled in
  *
- * @param {string} node - namehashed domain
- * @param {string} address - address of the resolver contract
+ * @param {string} domain - ens domain
+ * @param {SoyPublicResolver} resolver - A resolver contract
  * @returns {Promise<SoyPublicResolver>} - a truffle contract instance
  */
-module.exports = async function createNodeContract(node, address) {
-  const resolverContract = await SoyPublicResolver.at(address);
+module.exports = async function createNodeContract(domain, resolver) {
+  const node = namehash.hash(domain);
 
   // Fill in `node` for all methods that have it as a first param
   uniq(
-    resolverContract.abi
+    resolver.abi
       .filter(
         method =>
           method.type === 'function' &&
@@ -24,21 +24,39 @@ module.exports = async function createNodeContract(node, address) {
       .map(method => method.name)
   ).forEach(method => {
     // set _method so it can be used by later custom helpers
-    resolverContract[`_${method}`] = resolverContract[method];
+    resolver[`_${method}`] = resolver[method];
 
-    resolverContract[method] = resolverContract[method].bind(
-      resolverContract,
-      node
-    );
+    resolver[method] = resolver[method].bind(resolver, node);
   });
 
   // Custom publish revision so user doesn't have to deal with asciiToHex always
-  resolverContract.publishRevision = (contentHash, ...args) =>
-    resolverContract._publishRevision(
+  resolver.publishRevision = async (contentHash, alias, ...args) => {
+    const publishArgs = [
       node,
       Web3.utils.asciiToHex(contentHash),
+      alias,
       ...args
-    );
+    ].filter(x => x);
+    let result;
 
-  return resolverContract;
+    if (alias) {
+      // Truffle doesn't handle overloaded functions well...
+      result = await resolver.methods[
+        'publishRevision(bytes32,bytes,string)'
+      ].call(...publishArgs);
+    } else {
+      result = await resolver._publishRevision.call(...publishArgs);
+    }
+
+    await resolver._publishRevision(...publishArgs);
+
+    return result.toNumber();
+  };
+
+  resolver.contenthash = async () => {
+    const hash = await resolver._contenthash(node);
+    return Web3.utils.hexToAscii(hash);
+  };
+
+  return resolver;
 };

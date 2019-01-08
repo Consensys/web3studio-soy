@@ -46,7 +46,7 @@ describe('Origin Request Lambda', () => {
 
     await registerAndPublishRevision(soy, 'web3studio.test', contentHash);
 
-    global.testRegistryAddress = (await soy.registryContract()).address;
+    global.testRegistryAddress = (await soy.ens.registry()).address;
     const lambda = require('./viewerRequest');
     viewerHandler = lambda.handler;
   });

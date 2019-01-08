@@ -4,6 +4,8 @@ const namehash = require('eth-ens-namehash');
 const createNodeContract = require('./createNodeContract');
 const Ens = require('./Ens');
 
+// Node vs web
+// istanbul ignore next
 const { web3 } = global || window;
 
 /**
@@ -21,11 +23,13 @@ class Soy {
     this.web3 = provider ? new Web3(provider) : web3;
     this._txOps = txOps;
 
+    // Tests have globally configured web3, can't break this
+    // istanbul ignore next
     if (!this.web3) {
       throw new Error("Couldn't find a valid web3 provider.");
     }
 
-    this._provider = provider || web3.currentProvider;
+    this._provider = web3.currentProvider;
 
     ENS.setProvider(this._provider);
     ENS.defaults(this._txOps);
@@ -35,26 +39,9 @@ class Soy {
 
     this.ens = new Ens(this._provider, registryAddress);
 
-    if (registryAddress) {
-      this._registryContract = ENS.at(registryAddress);
-    }
-
     if (resolverAddress) {
       this._resolverContract = SoyPublicResolver.at(resolverAddress);
     }
-  }
-
-  /**
-   * Get the registry contract
-   *
-   * @returns {Promise<ENS>} - instance of ens registry contract
-   */
-  async registryContract() {
-    if (!this._registryContract) {
-      this._registryContract = ENS.deployed();
-    }
-
-    return this._registryContract;
   }
 
   /**
@@ -62,7 +49,9 @@ class Soy {
    *
    * @returns {Promise<SoyPublicResolver>} - instance of soy public resolver
    */
-  async resolverContract() {
+  async _getResolverContract() {
+    // Can't easily fake a deployed test network
+    // istanbul ignore next
     if (!this._resolverContract) {
       this._resolverContract = await SoyPublicResolver.deployed();
     }
@@ -74,11 +63,11 @@ class Soy {
    * Registers a new domain
    *
    * @param {string} domain - new domain to register
-   * @returns {Promise<string>} - the registered domain
+   * @returns {Promise<SoyPublicResolver>} - the registered domain
    */
   async registerDomain(domain) {
-    const registry = await this.registryContract();
-    const resolver = await this.resolverContract();
+    const registry = await this.ens.registry();
+    const resolver = await this._getResolverContract();
 
     const domainParts = domain.split('.');
     const label = domainParts[0];
@@ -93,7 +82,7 @@ class Soy {
 
     await registry.setResolver(newSubNode, resolver.address);
 
-    return this.getNodeResolver(domain);
+    return this.resolver(domain);
   }
 
   /**
@@ -102,11 +91,10 @@ class Soy {
    * @param {string} domain - The domain for the node
    * @returns {Promise<SoyPublicResolver>} - A resolver instance
    */
-  async getNodeResolver(domain) {
-    const node = namehash.hash(domain);
-    const resolver = await this.resolverContract();
+  async resolver(domain) {
+    const resolver = await this.ens.resolver(domain);
 
-    return createNodeContract(node, resolver.address);
+    return createNodeContract(domain, resolver);
   }
 }
 
