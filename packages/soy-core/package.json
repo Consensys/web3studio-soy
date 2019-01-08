@@ -1,0 +1,32 @@
+{
+  "name": "soy-core",
+  "version": "0.0.0",
+  "description": "Javascript api for soy interactions",
+  "keywords": [
+    "soy"
+  ],
+  "author": "Web3Studio Developers <web3studio@consensys.net>",
+  "homepage": "https://github.com/ConsenSys/web3studio-soy#readme",
+  "license": "Apache-2.0",
+  "main": "src/Soy.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ConsenSys/web3studio-soy.git"
+  },
+  "scripts": {
+    "test": "jest",
+    "jest": "jest"
+  },
+  "bugs": {
+    "url": "https://github.com/ConsenSys/web3studio-soy/issues"
+  },
+  "dependencies": {
+    "eth-ens-namehash": "^2.0.8",
+    "lru-cache": "^5.1.1",
+    "soy-contracts": "^0.0.0",
+    "web3": "1.0.0-beta.37"
+  },
+  "devDependencies": {
+    "lodash": "^4.17.11"
+  }
+}

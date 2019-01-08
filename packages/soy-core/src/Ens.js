@@ -7,7 +7,7 @@ const { SoyPublicResolver, ENS } = require('soy-contracts');
  * An ENS resolver. It aims to resolve various fields in a record and cache the
  * results respecting it's set ttl
  */
-class EnsResolver {
+class Ens {
   /**
    * Constructor
    *
@@ -80,11 +80,11 @@ class EnsResolver {
     }
 
     const { resolver, ttl } = await this._resolveNode(node);
-    const hash = Web3.utils.hexToAscii(await resolver.contenthash.call(node));
+    const hash = Web3.utils.hexToAscii(await resolver.contenthash(node));
     this._cache.set(key, hash, ttl * 1000);
 
     return hash;
   }
 }
 
-module.exports = EnsResolver;
+module.exports = Ens;

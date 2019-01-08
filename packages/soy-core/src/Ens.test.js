@@ -1,20 +1,23 @@
 const Ens = require('./Ens');
-const EnsSetup = require('../../test/EnsSetup');
+const {
+  setupEnsContracts,
+  registerAndPublishRevision
+} = require('../test/setup');
 
 const { web3 } = global;
 
 describe('ENS utility', () => {
   const contentHash = '/ipfs/QmVyYoFQ8KDLMUWhzxTn24js9g5BiC6QX3ZswfQ56T7A5T';
+  const domain = 'web3studio.test';
 
-  let domain;
   let registryAddress;
   let ens;
 
   beforeAll(async () => {
-    const ensSetup = new EnsSetup('test');
+    const soy = await setupEnsContracts(web3, 'test', { from: accounts[0] });
 
-    registryAddress = await ensSetup.createRegistry();
-    domain = await ensSetup.register('web3studio', contentHash);
+    await registerAndPublishRevision(soy, domain, contentHash);
+    registryAddress = (await soy.registryContract()).address;
   });
 
   beforeEach(() => {
@@ -23,15 +26,6 @@ describe('ENS utility', () => {
 
   it('it sets the domain path to an ipfs-path passed as a header', async () => {
     expect(await ens.resolveContenthash(domain)).toBe(contentHash);
-  });
-
-  it('Caches the resolved node', async () => {
-    const resolveNodeSpy = jest.spyOn(ens, '_resolveNode');
-
-    await ens.resolveContenthash(domain);
-    expect(resolveNodeSpy).toHaveBeenCalledTimes(1);
-    await ens.resolveContenthash(domain);
-    expect(resolveNodeSpy).toHaveBeenCalledTimes(1);
   });
 
   it('Caches the resolved node', async () => {
