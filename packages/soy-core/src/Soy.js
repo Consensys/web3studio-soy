@@ -4,10 +4,6 @@ const namehash = require('eth-ens-namehash');
 const createNodeContract = require('./createNodeContract');
 const Ens = require('./Ens');
 
-// Node vs web
-// istanbul ignore next
-const { web3 } = global || window;
-
 /**
  * Top level interface to Soy contracts
  */
@@ -29,7 +25,7 @@ class Soy {
       throw new Error("Couldn't find a valid web3 provider.");
     }
 
-    this._provider = web3.currentProvider;
+    this._provider = this.web3.currentProvider;
 
     ENS.setProvider(this._provider);
     ENS.defaults(this._txOps);
