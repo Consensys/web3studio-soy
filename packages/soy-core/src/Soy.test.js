@@ -1,5 +1,5 @@
-const { SoyPublicResolver } = require('soy-contracts');
 const Soy = require('./Soy');
+const Resolver = require('./Resolver');
 const {
   setupEnsContracts,
   registerAndPublishRevision
@@ -19,26 +19,40 @@ describe('Soy', () => {
     await registerAndPublishRevision(soy, domain, contentHash1);
   });
 
-  it('uses the globally scoped web3', async () => {
-    const globalSoy = new Soy({
+  it('defaults to a deployed resolver address', async () => {
+    const noResolverSoy = new Soy({
+      provider: web3.currentProvider,
       registryAddress: (await soy.ens.registry()).address
     });
-    const resolver = await globalSoy.resolver(domain);
-    expect(await resolver.contenthash()).toBe(contentHash1);
+
+    let error;
+
+    try {
+      await noResolverSoy._getResolverContract();
+    } catch (e) {
+      error = e;
+    }
+
+    // Because it's a test environment where there is no deployed network, we
+    // expect that fetching it will fail this way.
+    expect(error.message).toBe(
+      'SoyPublicResolver has not been deployed to detected network ' +
+        '(network/artifact mismatch)'
+    );
   });
 
   it('can register a domain', async () => {
     const resolver = await soy.registerDomain('test.test');
     const publicResolver = await soy._getResolverContract();
 
-    expect(resolver).toBeInstanceOf(SoyPublicResolver);
+    expect(resolver).toBeInstanceOf(Resolver);
 
     expect(resolver.address).toBe(publicResolver.address);
   });
 
   it('resolves a domain to a helper contract', async () => {
     const resolver = await soy.resolver(domain);
-    expect(resolver).toBeInstanceOf(SoyPublicResolver);
+    expect(resolver).toBeInstanceOf(Resolver);
 
     expect(await resolver.contenthash()).toBe(contentHash1);
   });

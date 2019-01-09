@@ -68,37 +68,11 @@ const provider = new HDWalletProvider(
 const soy = new Soy({ provider });
 ```
 
-### Register an ENS Domain with Soy
+### Scripting
 
-After [purchasing an ENS Domain](https://www.myetherwallet.com/#ens) you can
-register it with Soy
-
-```js
-const resolver = await soy.registerDomain('example.madewith.eth');
-```
-
-### Using the Resolver
-
-With a registered domain, you can now publish content revisions, use aliases, or
-use it like a normal ENS contract.
-
-```js
-const resolver = await soy.resolver('example.madewith.eth');
-
-await resolver.publishRevision(
-  '/ipfs/QmVyYoFQ8KDLMUWhzxTn24js9g5BiC6QX3ZswfQ56T7A5T'
-);
-```
-
-### View Your Beautiful Site
-
-Once you have ENS set up to point to an ipfs hash, simply add `.soy` to the ENS
-domain in your browser. For example, web3studio.eth becomes
-[web3studio.eth.soy][web3studio.eth.soy].
-
-## Examples
-
-### First time registering a domain and publishing a hash
+Scripting with Soy usually looks something like this. This is an example
+of creating a new Soy instance and using it to register a domain and publish
+the `contenthash` for the site.
 
 ```js
 const Soy = require('soy-core');
@@ -131,6 +105,12 @@ var provider = new HDWalletProvider(
 })().catch(console.log);
 ```
 
+### View Your Beautiful Site
+
+Once you have ENS set up to point to an ipfs hash, simply add `.soy` to the ENS
+domain in your browser. For example, web3studio.eth becomes
+[web3studio.eth.soy][web3studio.eth.soy].
+
 ## Packages
 
 Soy consists of a bunch of tools that make hosting distributed web sites easy. They are:
@@ -160,11 +140,14 @@ contracts of [`soy-contracts`][soy-contracts] enabling you to get your content o
 
 <dl>
 <dt><a href="#Ens">Ens</a></dt>
-<dd><p>An ENS resolver. It aims to resolve various fields in a record and cache the
-results respecting it&#39;s set ttl</p>
+<dd><p>Soy&#39;s ENS resolver which caches all results per domain&#39;s TTL set by it&#39;s resolver.</p>
+</dd>
+<dt><a href="#Resolver">Resolver</a></dt>
+<dd><p>A nod specific resolver</p>
 </dd>
 <dt><a href="#Soy">Soy</a></dt>
-<dd><p>Top level interface to Soy contracts</p>
+<dd><p>Soy is the best interface for Soy&#39;s smart contracts. It provides an easily
+scriptable interface for any deployment pattern.</p>
 </dd>
 </dl>
 
@@ -172,66 +155,131 @@ results respecting it&#39;s set ttl</p>
 
 ### Ens
 
-An ENS resolver. It aims to resolve various fields in a record and cache the
-results respecting it's set ttl
+Soy's ENS resolver which caches all results per domain's TTL set by it's resolver.
 
 **Kind**: global class
 
 - [Ens](#Ens)
-  - [new Ens(provider, registryAddress)](#new_Ens_new)
+  - [new Ens(provider, [registryAddress])](#new_Ens_new)
   - [.resolver(domain)](#Ens+resolver) ⇒ <code>Promise.&lt;SoyPublicResolver&gt;</code>
   - [.getContentHash(domain)](#Ens+getContentHash) ⇒ <code>Promise.&lt;string&gt;</code>
 
 <a name="new_Ens_new"></a>
 
-#### new Ens(provider, registryAddress)
+#### new Ens(provider, [registryAddress])
 
 Constructor
 
-| Param           | Type                | Description                                       |
-| --------------- | ------------------- | ------------------------------------------------- |
-| provider        | <code>Object</code> | Optional web3@1 provider, defaults to localhost   |
-| registryAddress | <code>string</code> | An optional registry address for bespoke networks |
+| Param             | Type                | Description                                       |
+| ----------------- | ------------------- | ------------------------------------------------- |
+| provider          | <code>Object</code> | A web3@1 provider, defaults to localhost          |
+| [registryAddress] | <code>string</code> | An optional registry address for bespoke networks |
+
+**Example** _(Get the &#x60;contenthash&#x60; for a domain)_
+
+```js
+const siteHash = soy.ens.getContentHash('web3studio.eth');
+```
 
 <a name="Ens+resolver"></a>
 
 #### ens.resolver(domain) ⇒ <code>Promise.&lt;SoyPublicResolver&gt;</code>
 
-Gets the resolver contract for a specific domain
+Gets a resolver contract instance for a registered ENS domain
 
 **Kind**: instance method of [<code>Ens</code>](#Ens)  
-**Returns**: <code>Promise.&lt;SoyPublicResolver&gt;</code> - - Resolver for a domain
+**Returns**: <code>Promise.&lt;SoyPublicResolver&gt;</code> - Resolver for a domain
 
-| Param  | Type                | Description |
-| ------ | ------------------- | ----------- |
-| domain | <code>string</code> | ens domain  |
+| Param  | Type                | Description                     |
+| ------ | ------------------- | ------------------------------- |
+| domain | <code>string</code> | ENS domain (eg: web3studio.eth) |
 
 <a name="Ens+getContentHash"></a>
 
 #### ens.getContentHash(domain) ⇒ <code>Promise.&lt;string&gt;</code>
 
-Resolves the content hash for a node name
+Resolves the `contenthash` for an ENS domain
 
 **Kind**: instance method of [<code>Ens</code>](#Ens)  
-**Returns**: <code>Promise.&lt;string&gt;</code> - - The content hash of the node
+**Returns**: <code>Promise.&lt;string&gt;</code> - The `contenthash` for the ENS domain
 
-| Param  | Type                | Description          |
-| ------ | ------------------- | -------------------- |
-| domain | <code>string</code> | The domain of a node |
+| Param  | Type                | Description                     |
+| ------ | ------------------- | ------------------------------- |
+| domain | <code>string</code> | ENS domain (eg: web3studio.eth) |
 
+<a name="Resolver"></a>
+
+### Resolver
+
+A nod specific resolver
+
+**Kind**: global class
+
+- [Resolver](#Resolver)
+  - [new Resolver(domain, resolver)](#new_Resolver_new)
+  - [.publishRevision(contentHash, [alias], [txOps])](#Resolver+publishRevision) ⇒ <code>Promise.&lt;number&gt;</code>
+  - [.contenthash()](#Resolver+contenthash) ⇒ <code>Promise.&lt;string&gt;</code>
+
+<a name="new_Resolver_new"></a>
+
+#### new Resolver(domain, resolver)
+
+Create a unique contract instance with common params filled in.
+Wraps all methods of [SoyPublicResolver](https://github.com/ConsenSys/web3studio-soy/blob/master/packages/soy-contracts/contracts/SoyPublicResolver.sol)
+and by extension the base [PublicResolver](https://github.com/ensdomains/resolvers/blob/master/contracts/PublicResolver.sol)
+without the need to specify a namehashed domain and tedious unit conversions.
+
+[`truffle-contract`](https://github.com/trufflesuite/truffle/tree/next/packages/truffle-contract)
+is used to generate the interface. For more detailed explanations, see their
+[docs](https://truffleframework.com/docs/truffle/getting-started/interacting-with-your-contracts)
+
+| Param    | Type                           | Description         |
+| -------- | ------------------------------ | ------------------- |
+| domain   | <code>string</code>            | ens domain          |
+| resolver | <code>SoyPublicResolver</code> | A resolver contract |
+
+<a name="Resolver+publishRevision"></a>
+
+#### resolver.publishRevision(contentHash, [alias], [txOps]) ⇒ <code>Promise.&lt;number&gt;</code>
+
+Publishes the content hash as a revision
+
+**Kind**: instance method of [<code>Resolver</code>](#Resolver)  
+**Returns**: <code>Promise.&lt;number&gt;</code> - The revision number
+
+| Param       | Type                | Description                           |
+| ----------- | ------------------- | ------------------------------------- |
+| contentHash | <code>string</code> | Content hash to publish for your site |
+| [alias]     | <code>string</code> | alias to set for this hash            |
+| [txOps]     | <code>Object</code> | web3 transactions options object      |
+
+<a name="Resolver+contenthash"></a>
+
+#### resolver.contenthash() ⇒ <code>Promise.&lt;string&gt;</code>
+
+Get the current contenthash
+
+**Kind**: instance method of [<code>Resolver</code>](#Resolver)  
+**Returns**: <code>Promise.&lt;string&gt;</code> - current resolver content hash  
 <a name="Soy"></a>
 
 ### Soy
 
-Top level interface to Soy contracts
+Soy is the best interface for Soy's smart contracts. It provides an easily
+scriptable interface for any deployment pattern.
 
-**Kind**: global class
+**Kind**: global class  
+**Properties**
+
+| Name | Type              | Description                                               |
+| ---- | ----------------- | --------------------------------------------------------- |
+| ens  | <code>ENS</code>  | [ENS](#ens) resolver utility                              |
+| web3 | <code>Web3</code> | [web3.js](https://web3js.readthedocs.io/en/1.0/) instance |
 
 - [Soy](#Soy)
   - [new Soy(options)](#new_Soy_new)
-  - [.\_getResolverContract()](#Soy+_getResolverContract) ⇒ <code>Promise.&lt;SoyPublicResolver&gt;</code>
-  - [.registerDomain(domain)](#Soy+registerDomain) ⇒ <code>Promise.&lt;SoyPublicResolver&gt;</code>
-  - [.resolver(domain)](#Soy+resolver) ⇒ <code>Promise.&lt;SoyPublicResolver&gt;</code>
+  - [.resolver(domain)](#Soy+resolver) ⇒ [<code>Promise.&lt;Resolver&gt;</code>](#Resolver)
+  - [.registerDomain(domain)](#Soy+registerDomain) ⇒ [<code>Promise.&lt;Resolver&gt;</code>](#Resolver)
 
 <a name="new_Soy_new"></a>
 
@@ -239,43 +287,60 @@ Top level interface to Soy contracts
 
 Create a new soy instance
 
-| Param   | Type                | Description          |
-| ------- | ------------------- | -------------------- |
-| options | <code>Object</code> | Soy instance options |
-
-<a name="Soy+_getResolverContract"></a>
-
-#### soy.\_getResolverContract() ⇒ <code>Promise.&lt;SoyPublicResolver&gt;</code>
-
-Get the resolver contract
-
-**Kind**: instance method of [<code>Soy</code>](#Soy)  
-**Returns**: <code>Promise.&lt;SoyPublicResolver&gt;</code> - - instance of soy public resolver  
-<a name="Soy+registerDomain"></a>
-
-#### soy.registerDomain(domain) ⇒ <code>Promise.&lt;SoyPublicResolver&gt;</code>
-
-Registers a new domain
-
-**Kind**: instance method of [<code>Soy</code>](#Soy)  
-**Returns**: <code>Promise.&lt;SoyPublicResolver&gt;</code> - - the registered domain
-
-| Param  | Type                | Description            |
-| ------ | ------------------- | ---------------------- |
-| domain | <code>string</code> | new domain to register |
+| Param                     | Type                       | Description                                                                                                        |
+| ------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| options                   | <code>Object</code>        | Soy instance options                                                                                               |
+| options.provider          | <code>Web3.Provider</code> | A Web3 provider instance                                                                                           |
+| [options.registryAddress] | <code>string</code>        | An address for a deployed ENS registry                                                                             |
+| [options.resolverAddress] | <code>string</code>        | An address for a deploy SoyPublicResolver                                                                          |
+| [...options.txOps]        | <code>Object</code>        | Default [transaction arguments](https://web3js.readthedocs.io/en/1.0/web3-eth.html#sendtransaction) passed to web3 |
 
 <a name="Soy+resolver"></a>
 
-#### soy.resolver(domain) ⇒ <code>Promise.&lt;SoyPublicResolver&gt;</code>
+#### soy.resolver(domain) ⇒ [<code>Promise.&lt;Resolver&gt;</code>](#Resolver)
 
-Get a resolver instance for a specific node
+With a registered domain, get a resolver instance for a specific node
 
 **Kind**: instance method of [<code>Soy</code>](#Soy)  
-**Returns**: <code>Promise.&lt;SoyPublicResolver&gt;</code> - - A resolver instance
+**Returns**: [<code>Promise.&lt;Resolver&gt;</code>](#Resolver) - - A resolver instance
 
 | Param  | Type                | Description             |
 | ------ | ------------------- | ----------------------- |
 | domain | <code>string</code> | The domain for the node |
+
+**Example** _(Publish a revision of your site)_
+
+```js
+const resolver = await soy.resolver('example.madewith.eth');
+
+await resolver.publishRevision(
+  '/ipfs/QmVyYoFQ8KDLMUWhzxTn24js9g5BiC6QX3ZswfQ56T7A5T'
+);
+```
+
+<a name="Soy+registerDomain"></a>
+
+#### soy.registerDomain(domain) ⇒ [<code>Promise.&lt;Resolver&gt;</code>](#Resolver)
+
+Registers a new domain and sets it's resolver to Soy's PublicResolver
+contract. This will only need to be done once per (sub)domain
+
+If you haven't done so yet, you will need to purchase a domain. We
+recommend using [My Ether Wallet](https://www.myetherwallet.com/#ens).
+Domain auctions will last a week.
+
+**Kind**: instance method of [<code>Soy</code>](#Soy)  
+**Returns**: [<code>Promise.&lt;Resolver&gt;</code>](#Resolver) - a resolver instance
+
+| Param  | Type                | Description                  |
+| ------ | ------------------- | ---------------------------- |
+| domain | <code>string</code> | a new ENS domain to register |
+
+**Example** _(Register an ENS Domain with Soy)_
+
+```js
+const resolver = await soy.registerDomain('example.madewith.eth');
+```
 
 ## Contributing
 
