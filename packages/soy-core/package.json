@@ -14,6 +14,7 @@
     "url": "git+https://github.com/ConsenSys/web3studio-soy.git"
   },
   "scripts": {
+    "readme:build": "jsdoc2md -f \"src/**/*.js\" -t docs/README.md.hbs -d 3 > README.md",
     "test": "jest",
     "jest": "jest"
   },
