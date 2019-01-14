@@ -4,15 +4,21 @@ const namehash = require('eth-ens-namehash');
 const { SoyPublicResolver, ENS } = require('soy-contracts');
 
 /**
- * An ENS resolver. It aims to resolve various fields in a record and cache the
- * results respecting it's set ttl
+ * Soy's ENS resolver which caches all results per domain's TTL set by it's resolver.
+ *
+ * @example <caption>Get the `contenthash` for a domain</caption>
+ * ```js
+ * const siteHash = soy.ens.getContentHash('web3studio.eth');
+ * ```
  */
 class Ens {
   /**
    * Constructor
    *
-   * @param {Object} provider - Optional web3@1 provider, defaults to localhost
-   * @param {string} registryAddress - An optional registry address for bespoke networks
+   * @param {Object} provider - A web3@1 provider, defaults to localhost
+   * @param {string} [registryAddress] - An optional registry address for bespoke networks
+   *
+   * @see Use [Soy](#Soy) for creation
    */
   constructor(provider, registryAddress) {
     this._cache = new Cache();
@@ -109,10 +115,10 @@ class Ens {
   }
 
   /**
-   * Gets the resolver contract for a specific domain
+   * Gets a resolver contract instance for a registered ENS domain
    *
-   * @param {string} domain - ens domain
-   * @returns {Promise<SoyPublicResolver>} - Resolver for a domain
+   * @param {string} domain - ENS domain (eg: web3studio.eth)
+   * @returns {Promise<SoyPublicResolver>} Resolver for a domain
    */
   async resolver(domain) {
     const node = namehash.hash(domain);
@@ -122,10 +128,10 @@ class Ens {
   }
 
   /**
-   * Resolves the content hash for a node name
+   * Resolves the `contenthash` for an ENS domain
    *
-   * @param {string} domain - The domain of a node
-   * @returns {Promise<string>} - The content hash of the node
+   * @param {string} domain - ENS domain (eg: web3studio.eth)
+   * @returns {Promise<string>} The `contenthash` for the ENS domain
    */
   async getContentHash(domain) {
     const node = namehash.hash(domain);

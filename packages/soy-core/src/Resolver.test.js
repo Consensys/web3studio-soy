@@ -5,7 +5,7 @@ const {
 
 const { web3 } = global;
 
-describe('createNodeContract helper creates resolvers which', () => {
+describe('A Resolver which', () => {
   const contentHash1 = '/ipfs/QmVyYoFQ8KDLMUWhzxTn24js9g5BiC6QX3ZswfQ56T7A5T';
   const contentHash2 = '/ipfs/QmVyYoFQ8KDLMUWhzxTn24js9g5BiC6QX3ZswfQ56T7A5U';
   const domain = 'web3studio.test';

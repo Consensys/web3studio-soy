@@ -72,37 +72,11 @@ const provider = new HDWalletProvider(
 const soy = new Soy({ provider });
 ```
 
-### Register an ENS Domain with Soy
+### Scripting
 
-After [purchasing an ENS Domain](https://www.myetherwallet.com/#ens) you can
-register it with Soy
-
-```js
-const resolver = await soy.registerDomain('example.madewith.eth');
-```
-
-### Using the Resolver
-
-With a registered domain, you can now publish content revisions, use aliases, or
-use it like a normal ENS contract.
-
-```js
-const resolver = await soy.resolver('example.madewith.eth');
-
-await resolver.publishRevision(
-  '/ipfs/QmVyYoFQ8KDLMUWhzxTn24js9g5BiC6QX3ZswfQ56T7A5T'
-);
-```
-
-### View Your Beautiful Site
-
-Once you have ENS set up to point to an ipfs hash, simply add `.soy` to the ENS
-domain in your browser. For example, web3studio.eth becomes
-[web3studio.eth.soy][web3studio.eth.soy].
-
-## Examples
-
-### First time registering a domain and publishing a hash
+Scripting with Soy usually looks something like this. This is an example
+of creating a new Soy instance and using it to register a domain and publish
+the `contenthash` for the site.
 
 ```js
 const Soy = require('soy-core');
@@ -134,6 +108,12 @@ var provider = new HDWalletProvider(
   console.log(`Revision ${revision} published by Soy!`);
 })().catch(console.log);
 ```
+
+### View Your Beautiful Site
+
+Once you have ENS set up to point to an ipfs hash, simply add `.soy` to the ENS
+domain in your browser. For example, web3studio.eth becomes
+[web3studio.eth.soy][web3studio.eth.soy].
 
 ## Packages
 
