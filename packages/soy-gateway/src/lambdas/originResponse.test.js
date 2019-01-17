@@ -13,7 +13,7 @@ describe('Origin Response Lambda', () => {
   let request;
 
   beforeAll(async () => {
-    const soy = await setupEnsContracts(web3, 'test', { from: accounts[0] });
+    const soy = await setupEnsContracts();
 
     await registerAndPublishRevision(soy, 'web3studio.test', contentHash);
     await registerAndPublishRevision(

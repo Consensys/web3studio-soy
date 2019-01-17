@@ -11,11 +11,20 @@ class GanacheEnvironment extends NodeEnvironment {
    */
   async setup() {
     await super.setup();
+
     const web3 = new Web3(ganache.provider());
     const accounts = await web3.eth.getAccounts();
 
     this.global.web3 = web3;
     this.global.accounts = accounts;
+
+    this.global.ipfs = {
+      host: 'localhost',
+      port: '5002',
+      options: {
+        protocol: 'http'
+      }
+    };
   }
 }
 

@@ -65,7 +65,7 @@ const provider = new HDWalletProvider(
   `https://${infuraNetwork}.infura.io/v3/${infuraApiKey}`
 );
 
-const soy = new Soy({ provider });
+const soy = new Soy(provider);
 ```
 
 ### Scripting
@@ -96,7 +96,7 @@ var provider = new HDWalletProvider(
   const accounts = await web3.eth.getAccounts();
   const owner = accounts[0];
 
-  const soy = new Soy({ provider, from: owner });
+  const soy = new Soy(provider, { from: owner });
 
   const resolver = await soy.registerDomain(domain);
   const revision = await resolver.publishRevision(contentHash);
@@ -271,29 +271,47 @@ scriptable interface for any deployment pattern.
 **Kind**: global class  
 **Properties**
 
-| Name | Type              | Description                                               |
-| ---- | ----------------- | --------------------------------------------------------- |
-| ens  | <code>ENS</code>  | [ENS](#ens) resolver utility                              |
-| web3 | <code>Web3</code> | [web3.js](https://web3js.readthedocs.io/en/1.0/) instance |
+| Name | Type              | Description                                                                  |
+| ---- | ----------------- | ---------------------------------------------------------------------------- |
+| ens  | <code>ENS</code>  | [ENS](#ens) resolver utility                                                 |
+| web3 | <code>Web3</code> | [web3.js](https://web3js.readthedocs.io/en/1.0/) instance                    |
+| ipfs | <code>IPFS</code> | [ipfs-http-client](https://github.com/ipfs/js-ipfs-http-client#api) instance |
 
 - [Soy](#Soy)
-  - [new Soy(options)](#new_Soy_new)
+  - [new Soy(provider, [options])](#new_Soy_new)
+  - [.uploadToIPFSAndPublish(path, domain, [options])](#Soy+uploadToIPFSAndPublish) ⇒ <code>Promise.&lt;{hash: string, rev: number}&gt;</code>
   - [.resolver(domain)](#Soy+resolver) ⇒ [<code>Promise.&lt;Resolver&gt;</code>](#Resolver)
   - [.registerDomain(domain)](#Soy+registerDomain) ⇒ [<code>Promise.&lt;Resolver&gt;</code>](#Resolver)
 
 <a name="new_Soy_new"></a>
 
-#### new Soy(options)
+#### new Soy(provider, [options])
 
 Create a new soy instance
 
 | Param                     | Type                       | Description                                                                                                        |
 | ------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| options                   | <code>Object</code>        | Soy instance options                                                                                               |
-| options.provider          | <code>Web3.Provider</code> | A Web3 provider instance                                                                                           |
+| provider                  | <code>Web3.Provider</code> | A Web3 provider instance                                                                                           |
+| [options]                 | <code>Object</code>        | Soy instance options                                                                                               |
 | [options.registryAddress] | <code>string</code>        | An address for a deployed ENS registry                                                                             |
 | [options.resolverAddress] | <code>string</code>        | An address for a deploy SoyPublicResolver                                                                          |
 | [...options.txOps]        | <code>Object</code>        | Default [transaction arguments](https://web3js.readthedocs.io/en/1.0/web3-eth.html#sendtransaction) passed to web3 |
+
+<a name="Soy+uploadToIPFSAndPublish"></a>
+
+#### soy.uploadToIPFSAndPublish(path, domain, [options]) ⇒ <code>Promise.&lt;{hash: string, rev: number}&gt;</code>
+
+Upload the contents of a directory to ipfs and publishes the root folder's
+hash as a revision
+
+**Kind**: instance method of [<code>Soy</code>](#Soy)  
+**Returns**: <code>Promise.&lt;{hash: string, rev: number}&gt;</code> - - The hash published and it's revision number
+
+| Param     | Type                | Description                                                                                     |
+| --------- | ------------------- | ----------------------------------------------------------------------------------------------- |
+| path      | <code>string</code> | Path to the directory                                                                           |
+| domain    | <code>string</code> | ENS domain to publish a revision                                                                |
+| [options] | <code>Object</code> | IPFS [options](https://github.com/ipfs/interface-ipfs-core/blob/master/SPEC/FILES.md#addfromfs) |
 
 <a name="Soy+resolver"></a>
 

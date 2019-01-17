@@ -15,7 +15,8 @@
   },
   "scripts": {
     "readme:build": "jsdoc2md -f \"src/**/*.js\" -t docs/README.md.hbs -d 3 > README.md && git add README.md",
-    "test": "jest",
+    "test": "concurrently -k \"yarn ipfsd\" \"jest\" -s first",
+    "ipfsd": "./scripts/ipfsd.sh",
     "jest": "jest"
   },
   "bugs": {
@@ -23,11 +24,13 @@
   },
   "dependencies": {
     "eth-ens-namehash": "^2.0.8",
+    "ipfs-http-client": "^29.0.0",
     "lru-cache": "^5.1.1",
     "soy-contracts": "^0.0.0",
     "web3": "1.0.0-beta.37"
   },
   "devDependencies": {
+    "ipfs": "^0.34.0",
     "lodash": "^4.17.11"
   }
 }

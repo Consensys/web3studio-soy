@@ -69,7 +69,7 @@ const provider = new HDWalletProvider(
   `https://${infuraNetwork}.infura.io/v3/${infuraApiKey}`
 );
 
-const soy = new Soy({ provider });
+const soy = new Soy(provider);
 ```
 
 ### Scripting
@@ -100,7 +100,7 @@ var provider = new HDWalletProvider(
   const accounts = await web3.eth.getAccounts();
   const owner = accounts[0];
 
-  const soy = new Soy({ provider, from: owner });
+  const soy = new Soy(provider, { from: owner });
 
   const resolver = await soy.registerDomain(domain);
   const revision = await resolver.publishRevision(contentHash);

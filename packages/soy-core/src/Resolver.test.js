@@ -3,8 +3,6 @@ const {
   registerAndPublishRevision
 } = require('../test/setup');
 
-const { web3 } = global;
-
 describe('A Resolver which', () => {
   const contentHash1 = '/ipfs/QmVyYoFQ8KDLMUWhzxTn24js9g5BiC6QX3ZswfQ56T7A5T';
   const contentHash2 = '/ipfs/QmVyYoFQ8KDLMUWhzxTn24js9g5BiC6QX3ZswfQ56T7A5U';
@@ -13,7 +11,7 @@ describe('A Resolver which', () => {
   let resolver;
 
   beforeAll(async () => {
-    soy = await setupEnsContracts(web3, 'test', { from: accounts[0] });
+    soy = await setupEnsContracts();
 
     await registerAndPublishRevision(soy, domain, contentHash1);
   });

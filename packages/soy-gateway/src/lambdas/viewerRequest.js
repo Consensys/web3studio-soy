@@ -2,7 +2,7 @@ const Soy = require('soy-core');
 const config = require('../config');
 
 const { registryAddress, ensTld, provider } = config();
-const soy = new Soy({ provider, registryAddress });
+const soy = new Soy(provider, { registryAddress });
 const ipfsPattern = /^(\/ipfs\/Qm\w{44})(\/?.*)$/;
 
 /**

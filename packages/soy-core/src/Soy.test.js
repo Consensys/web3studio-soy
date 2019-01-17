@@ -1,3 +1,4 @@
+const path = require('path');
 const Soy = require('./Soy');
 const Resolver = require('./Resolver');
 const {
@@ -14,14 +15,13 @@ describe('Soy', () => {
   let soy;
 
   beforeAll(async () => {
-    soy = await setupEnsContracts(web3, 'test', { from: accounts[0] });
+    soy = await setupEnsContracts();
 
     await registerAndPublishRevision(soy, domain, contentHash1);
   });
 
   it('defaults to a deployed resolver address', async () => {
-    const noResolverSoy = new Soy({
-      provider: web3.currentProvider,
+    const noResolverSoy = new Soy(web3.currentProvider, {
       registryAddress: (await soy.ens.registry()).address
     });
 
@@ -78,5 +78,27 @@ describe('Soy', () => {
 
     await resolver.setRevisionAlias(hash2Revision, 'green');
     expect(await resolver.contenthash()).toBe(contentHash2);
+  });
+
+  it("defaults to infura's ipfs", async () => {
+    const infuraSoy = new Soy(web3.currentProvider);
+
+    expect(await infuraSoy.ipfs.util.getEndpointConfig()).toEqual({
+      host: 'ipfs.infura.io',
+      port: 5001
+    });
+  });
+
+  it('can upload and publish a revision', async () => {
+    const result = await soy.uploadToIPFSAndPublish(
+      path.join(__dirname, '../test/fixtures/site'),
+      domain
+    );
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        hash: '/ipfs/QmPHukTJAvBpSeMz3gUkWz8UzX6dPX8JtNxCeEWMnUN3bD'
+      })
+    );
   });
 });

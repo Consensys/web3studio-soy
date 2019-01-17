@@ -6,10 +6,16 @@ const Soy = require('../');
  *
  * @param {Object} web3 - a web3 instance
  * @param {string} tld - the tld for the registry to manager
+ * @param {Object} ipfs - IPFS endpoint configuration
  * @param {Object} txOps - default tx ops for web3
  * @returns {Promise<Soy>} - A soy instance
  */
-async function setupEnsContracts(web3, tld, txOps) {
+async function setupEnsContracts(
+  web3 = global.web3,
+  tld = 'test',
+  ipfs = global.ipfs,
+  txOps = { from: global.accounts[0] }
+) {
   const rootNode = web3.utils.asciiToHex(0);
   const provider = web3.currentProvider;
 
@@ -31,8 +37,8 @@ async function setupEnsContracts(web3, tld, txOps) {
     txOps
   );
 
-  return new Soy({
-    provider: web3.currentProvider,
+  return new Soy(provider, {
+    ipfs,
     registryAddress: registryContract.address,
     resolverAddress: resolverContract.address,
     ...txOps
