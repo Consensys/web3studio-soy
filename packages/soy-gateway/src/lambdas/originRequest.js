@@ -30,5 +30,10 @@ exports.handler = async event => {
     };
   }
 
+  // Forwarding host for cloudfront to use calculating a cache key
+  request.headers['x-forwarded-host'] = [
+    { key: 'X-Forwarded-Host', value: request.headers.host[0].value }
+  ];
+
   return request;
 };

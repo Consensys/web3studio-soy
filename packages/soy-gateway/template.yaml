@@ -70,6 +70,17 @@ Resources:
       AutoPublishAlias: live
       Role: !GetAtt SoyEdgeFunctionIAMRole.Arn
 
+  SoyOriginResponseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: build/lambdas/originResponse.js
+      Handler: index.handler
+      MemorySize: 128
+      Timeout: 5
+      Runtime: nodejs8.10
+      AutoPublishAlias: live
+      Role: !GetAtt SoyEdgeFunctionIAMRole.Arn
+
   Distribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -96,7 +107,9 @@ Resources:
           DefaultTTL: 86400 # 24 hours
           MinTTL: 900 # 15 minutes
           ForwardedValues:
-            Headers: ['X-Ipfs-Path']
+            Headers:
+              - X-Ipfs-Path
+              - X-Forwarded-Host
             Cookies:
               Forward: none
             QueryString: false
@@ -105,6 +118,8 @@ Resources:
               LambdaFunctionARN: !Ref SoyViewerRequestFunction.Version
             - EventType: origin-request
               LambdaFunctionARN: !Ref SoyOriginRequestFunction.Version
+            - EventType: origin-response
+              LambdaFunctionARN: !Ref SoyOriginResponseFunction.Version
 
   DNS:
     Type: AWS::Route53::RecordSetGroup
