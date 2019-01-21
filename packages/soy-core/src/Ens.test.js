@@ -15,7 +15,7 @@ describe('ENS utility', () => {
   let ens;
 
   beforeAll(async () => {
-    const soy = await setupEnsContracts(web3, 'test', { from: accounts[0] });
+    const soy = await setupEnsContracts();
 
     await registerAndPublishRevision(soy, domain, contentHash);
     registryAddress = (await soy.ens.registry()).address;

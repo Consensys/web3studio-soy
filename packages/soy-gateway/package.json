@@ -1,5 +1,6 @@
 {
   "name": "soy-gateway",
+  "private": true,
   "version": "0.0.0",
   "description": "ENS reverse proxy",
   "author": "Michael Barlock <barlockm@gmail.com>",
