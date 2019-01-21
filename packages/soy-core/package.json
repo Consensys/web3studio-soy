@@ -1,6 +1,6 @@
 {
   "name": "soy-core",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Javascript api for soy interactions",
   "keywords": [
     "soy"
@@ -26,7 +26,7 @@
     "eth-ens-namehash": "^2.0.8",
     "ipfs-http-client": "^29.0.0",
     "lru-cache": "^5.1.1",
-    "soy-contracts": "^0.0.0",
+    "soy-contracts": "^1.0.0",
     "web3": "1.0.0-beta.37"
   },
   "devDependencies": {
