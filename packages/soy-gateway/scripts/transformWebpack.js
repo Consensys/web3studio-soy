@@ -20,7 +20,7 @@ const resolveModule = modulePath =>
 const testPattern = /\.test\.js$/;
 
 module.exports = config => {
-  config.devtool = 'cheap-source-map';
+  config.devtool = 'cheap-module-source-map';
   // Remove test entries from being built
   config.entry = Object.entries(config.entry).reduce(
     (entry, [file, entries]) => {

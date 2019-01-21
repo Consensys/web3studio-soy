@@ -66,6 +66,16 @@ describe('Origin Request Lambda', () => {
     );
   });
 
+  it('it sets an x-forwarded-host header', async () => {
+    const originRequest = await simulateCloudfront(event);
+
+    expect(originRequest.headers['x-forwarded-host'][0]).toEqual(
+      expect.objectContaining({
+        value: request.headers.host[0].value
+      })
+    );
+  });
+
   it('it sets the origin path to contentHash with a nested uri', async () => {
     request.uri = '/static/index.js';
 
