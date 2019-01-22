@@ -7,6 +7,8 @@
     "lint": "yarn eslint . && yarn solium -d .",
     "prettier": "prettier \"**/*.{js,json,css,md}\" --write",
     "readme:build": "yarn lerna run readme:build",
+    "lerna:version": "yarn lerna version --no-push",
+    "lerna:publish": "lerna publish from-git",
     "postinstall": "yarn lerna run build"
   },
   "devDependencies": {

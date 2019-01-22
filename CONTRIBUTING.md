@@ -54,3 +54,23 @@ developers might not want to merge into the project.
 license your work under the terms of the
 [Apache 2.0](https://github.com/ConsenSys/web3studio-soy/blob/master/packages/soy-core/LICENSE)
 License.
+
+## Releasing a New Version
+
+Soy uses [Semver](https://semver.org/) for versioning. Based on the changes
+since the last release, determine which type of release this is, `major`,
+`minor`, or `patch`.
+
+Now, create a new branch following the pattern `release/vX.X.X`. Use
+lerna to update all of the packages to the new version, and create a pull
+request. Travis will handle publishing to npm.
+
+For example, to release a new major release of 1.0.0...
+
+```bash
+$ git checkout -b release/v1.0.0
+$ yarn lerna:version major
+$ git push origin release/v1.0.0 --tags
+
+# Open a pull request from `release/v1.0.0` => `master`
+```
