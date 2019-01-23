@@ -74,3 +74,6 @@ $ git push origin release/v1.0.0 --tags
 
 # Open a pull request from `release/v1.0.0` => `master`
 ```
+
+When merging the pr, you will need to do a rebase merge rather than creating a
+merge commit.
