@@ -1,0 +1,48 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Route53HealthCheck
+Parameters:
+  SNSNotificationEmail:
+    Description: Email to send notifications to for a failure
+    Type: String
+
+Resources:
+  SoyHealthCheck:
+    Type: AWS::Route53::HealthCheck
+    Properties:
+      HealthCheckConfig:
+        Type: HTTPS_STR_MATCH
+        FullyQualifiedDomainName: web3studio.eth.soy
+        Port: '443'
+        ResourcePath: '/web3studio/'
+        SearchString: Web3Studio
+        MeasureLatency: true
+        RequestInterval: '30'
+        FailureThreshold: '3'
+
+  SoyHealthCheckTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: WebsiteHealthCheck
+      Subscription:
+        - Endpoint: !Ref 'SNSNotificationEmail'
+          Protocol: email
+
+  SoyHealthCheckCloudWatchAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: SoyHealthCheck
+      AlarmDescription: Health check for consensys.net/web3studio/
+      MetricName: HealthCheckStatus
+      ActionsEnabled: true
+      ComparisonOperator: LessThanThreshold
+      EvaluationPeriods: '1'
+      Namespace: AWS/Route53
+      Period: '60'
+      Statistic: Minimum
+      Threshold: '1.0'
+      AlarmActions:
+        - !Ref SoyHealthCheckTopic
+      Dimensions:
+        - Name: HealthCheckId
+          Value: !Ref SoyHealthCheck
