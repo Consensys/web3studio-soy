@@ -6,6 +6,7 @@ const cfRequestEvent = require('../../test/fixtures/cf-request');
 
 describe('Viewer Request Lambda', () => {
   const contentHash = '/ipfs/QmVyYoFQ8KDLMUWhzxTn24js9g5BiC6QX3ZswfQ56T7A5T';
+  const contentHash2 = '/ipfs/QmVyYoFQ8KDLMUWhzxTn24js9g5BiC6QX3ZswfQ56T7A6U';
 
   let handler;
   let event;
@@ -77,15 +78,38 @@ describe('Viewer Request Lambda', () => {
     });
   });
 
-  it('it passes the request if it is an ipfs path', async () => {
-    request.uri = contentHash;
+  it("it forwards the request if it's an ipfs path that matches the domain's hash", async () => {
+    const path = '/index.js';
+
+    request.uri = `${contentHash}${path}`;
 
     const originRequest = await handler(event);
 
     expect(originRequest.headers['x-ipfs-path'][0]).toEqual(
       expect.objectContaining({
         key: 'X-Ipfs-Path',
+        value: request.uri
+      })
+    );
+    expect(originRequest.headers['x-ipfs-root'][0]).toEqual(
+      expect.objectContaining({
+        key: 'X-Ipfs-Root',
         value: contentHash
+      })
+    );
+  });
+
+  it("it doesn't forward the request if it is an ipfs path that matches the domain's", async () => {
+    const path = '/index.js';
+
+    request.uri = `${contentHash2}${path}`;
+
+    const originRequest = await handler(event);
+
+    expect(originRequest.headers['x-ipfs-path'][0]).toEqual(
+      expect.objectContaining({
+        key: 'X-Ipfs-Path',
+        value: `${contentHash}${request.uri}`
       })
     );
     expect(originRequest.headers['x-ipfs-root'][0]).toEqual(
