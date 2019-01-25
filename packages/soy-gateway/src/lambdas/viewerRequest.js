@@ -45,28 +45,30 @@ exports.handler = async event => {
   const host = request.headers.host[0].value;
 
   const requestUri = request.uri;
-  const ipfsMatch = requestUri.match(ipfsPattern);
+  const ipfsMatch = requestUri.match(ipfsPattern) || [];
+  const ipfsMatchRoot = ipfsMatch[1];
+  const ipfsMatchPath = ipfsMatch[2] || '/';
 
-  if (ipfsMatch) {
-    // Pass through ipfs paths to the gateway
-    setHeaders(request, ipfsMatch[1], ipfsMatch[2]);
-  } else {
-    // Map hostname to ens record and it's root content hash
-    const ensDomain = `${host.replace('.eth.soy', '')}.${ensTld}`;
+  // Map hostname to ens record and it's root content hash
+  const ensDomain = `${host.replace('.eth.soy', '')}.${ensTld}`;
 
-    try {
-      let ipfsRoot = await soy.ens.getContentHash(ensDomain);
+  try {
+    let ipfsRoot = await soy.ens.getContentHash(ensDomain);
+    let requestPath = requestUri;
 
-      ipfsRoot = ipfsRoot.endsWith('/') ? ipfsRoot.slice(0, -1) : ipfsRoot;
+    ipfsRoot = ipfsRoot.endsWith('/') ? ipfsRoot.slice(0, -1) : ipfsRoot;
 
-      setHeaders(request, ipfsRoot, requestUri);
-    } catch (e) {
-      // 404 if the ens domain doesn't exist or have a contentHash
-      return {
-        status: 404,
-        statusDescription: 'Not Found'
-      };
+    if (ipfsMatchRoot && ipfsMatchRoot === ipfsRoot) {
+      requestPath = ipfsMatchPath;
     }
+
+    setHeaders(request, ipfsRoot, requestPath);
+  } catch (e) {
+    // 404 if the ens domain doesn't exist or have a contentHash
+    return {
+      status: 404,
+      statusDescription: 'Not Found'
+    };
   }
 
   return request;
