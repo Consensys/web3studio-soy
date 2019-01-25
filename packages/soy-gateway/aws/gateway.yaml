@@ -51,7 +51,7 @@ Resources:
   SoyViewerRequestFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: build/lambdas/viewerRequest.js
+      CodeUri: ../build/lambdas/viewerRequest.js
       Handler: index.handler
       MemorySize: 128
       Timeout: 5
@@ -62,7 +62,7 @@ Resources:
   SoyOriginRequestFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: build/lambdas/originRequest.js
+      CodeUri: ../build/lambdas/originRequest.js
       Handler: index.handler
       MemorySize: 128
       Timeout: 5
@@ -73,7 +73,7 @@ Resources:
   SoyOriginResponseFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: build/lambdas/originResponse.js
+      CodeUri: ../build/lambdas/originResponse.js
       Handler: index.handler
       MemorySize: 128
       Timeout: 5
