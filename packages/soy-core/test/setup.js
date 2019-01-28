@@ -1,5 +1,10 @@
-const { SoyPublicResolver, ENS } = require('soy-contracts');
+const ENSArtifact = require('soy-contracts/build/contracts/ENSRegistry.json');
+const SoyPublicResolverArtifact = require('soy-contracts/build/contracts/SoyPublicResolver.json');
+const contract = require('truffle-contract');
 const Soy = require('../');
+
+const ENS = contract(ENSArtifact);
+const SoyPublicResolver = contract(SoyPublicResolverArtifact);
 
 /**
  * Deploy a provider and ens contract and wire them together

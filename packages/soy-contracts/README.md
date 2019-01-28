@@ -1,8 +1,8 @@
 <h1 align="center">
   <br/>
-  <a href='https://github.com/ConsenSys/web3studio-soy'><img 
-      width='250px' 
-      alt='' 
+  <a href='https://github.com/ConsenSys/web3studio-soy'><img
+      width='250px'
+      alt=''
       src="https://user-images.githubusercontent.com/5770007/50840308-2f093000-1330-11e9-996a-2e61a8b7fd9a.png" /></a>
   <br/>
   Contracts
@@ -22,7 +22,7 @@
 Soy Contracts is the source code for Soy's public ENS resolver and a low level JS interface to the contracts.
 
 <br/>
-  
+
 ## Usage
 
 ### Install
@@ -83,6 +83,37 @@ await registryContract.setSubnodeOwner(
 
 Please read through our [contributing guidelines][contributing].
 Included are directions for coding standards, and notes on development.
+
+### Deploying a new Public Resolver
+
+**NB: For maintainers only**
+
+Create a `.env` file in `packages/soy-contracts` and add `INFURA_API_KEY` and `WALLET_MNEMONIC`.
+
+```.env
+INFURA_API_KEY="Some api key"
+WALLET_MNEMONIC="Team's wallet mnemonic"
+```
+
+Then follow below:
+
+```bash
+# Build a fresh set of contract assets
+$ yarn build
+
+# Test local deployment for issues, you'll need ganache running on the computer
+$ yarn truffle deploy
+
+# If everything goes well, run for each network
+$ yarn truffle deploy --network ropsten
+$ yarn truffle deploy --network rinkeby
+
+# Check current [gas prices](https://ethgasstation.info/) and update
+# `truffle-config.js`'s mainnet configuration
+$ yarn truffle deploy --network mainnet
+
+# When done, update the network locations in `src/SoyPublicResolver.js` with new addresses
+```
 
 ## License
 
