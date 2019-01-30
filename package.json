@@ -5,6 +5,7 @@
     "test": "yarn lint && yarn test:packages",
     "test:packages": "yarn lerna run test",
     "lint": "yarn eslint . && yarn solium -d .",
+    "deploy": "yarn lerna run --stream deploy",
     "prettier": "prettier \"**/*.{js,json,css,md}\" --write",
     "readme:build": "yarn lerna run readme:build",
     "lerna:version": "yarn lerna version --no-push",
