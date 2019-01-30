@@ -27,7 +27,7 @@ deploy:
     on:
       branch: master
   - provider: script
-    script: 'travis_wait yarn deploy'
+    script: ./.travis/travis_wait "yarn deploy"
     skip_cleanup: true
     on:
       branch: master
