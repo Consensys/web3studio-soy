@@ -9,7 +9,7 @@
     "prettier": "prettier \"**/*.{js,json,css,md}\" --write",
     "readme:build": "yarn lerna run readme:build",
     "lerna:version": "yarn lerna version --no-push",
-    "lerna:publish": "lerna publish from-git",
+    "lerna:publish": "lerna publish from-package",
     "postinstall": "yarn lerna run build"
   },
   "devDependencies": {
