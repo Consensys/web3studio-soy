@@ -5,7 +5,6 @@ Description: Soy Gateway Edge
 Parameters:
   AcmCertificateArn:
     Description: The ARN of a certificate from AWS Certificate Manager (ACM)
-    Default: arn:aws:acm:us-east-1:066707434473:certificate/08388f22-ad8a-4889-803b-2b30f84a4783
     Type: String
 
   Stage:
@@ -20,7 +19,6 @@ Parameters:
 
   Route53HostedZoneId:
     Description: Hosted Route53 ZoneID
-    Default: Z8QV0PYI2G4SG
     Type: String
 
 Resources:

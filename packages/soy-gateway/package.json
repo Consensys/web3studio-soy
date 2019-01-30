@@ -12,10 +12,10 @@
   },
   "scripts": {
     "start": "yarn lambda:build && sam local invoke SoyViewerRequestFunction --event test/fixtures/cf-request.json",
-    "sam:deploy": "./aws/deploy.sh",
-    "sam:package": "./aws/package.sh",
+    "aws:deploy": "./aws/deploy.sh",
+    "aws:package": "./aws/package.sh",
     "lambda:build": "rm -rf ./build/lambdas && lambda-tools-build -s soy-edge -n 8.10 -w scripts/transformWebpack -o ./build/lambdas src/lambdas",
-    "lambda:deploy": "yarn lambda:build && yarn sam:package && yarn sam:deploy",
+    "deploy": "yarn lambda:build && yarn aws:package && yarn aws:deploy",
     "test": "jest",
     "jest": "jest"
   },

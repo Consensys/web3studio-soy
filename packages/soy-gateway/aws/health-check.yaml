@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Route53HealthCheck
+Description: web3studio.eth.soy Health Check
 Parameters:
   SNSNotificationEmail:
     Description: Email to send notifications to for a failure
