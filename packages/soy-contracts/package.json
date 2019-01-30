@@ -12,7 +12,7 @@
     "start": "concurrently --kill-others-on-fail -n w: npm:start:*",
     "start:ganache": "ganache-cli -i 42 -b 1 -d",
     "start:migrate": "yarn truffle migrate --reset && yarn truffle exec scripts/ens.js",
-    "build": "truffle compile",
+    "build": "rm -rf build && truffle compile",
     "test": "solidity-coverage"
   },
   "repository": {
