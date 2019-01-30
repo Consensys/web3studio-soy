@@ -61,19 +61,15 @@ Soy uses [Semver](https://semver.org/) for versioning. Based on the changes
 since the last release, determine which type of release this is, `major`,
 `minor`, or `patch`.
 
-Now, create a new branch following the pattern `release/vX.X.X`. Use
-lerna to update all of the packages to the new version, and create a pull
+Use lerna to update all of the packages to the new version, and create a pull
 request. Travis will handle publishing to npm.
 
-For example, to release a new major release of 1.0.0...
+For example, to release a new major version...
 
 ```bash
 $ git checkout -b release/v1.0.0
 $ yarn lerna:version major
-$ git push origin release/v1.0.0 --tags
+$ git push origin release/v1.0.0 --follow-tags
 
 # Open a pull request from `release/v1.0.0` => `master`
 ```
-
-When merging the pr, you will need to do a rebase merge rather than creating a
-merge commit.

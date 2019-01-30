@@ -22,10 +22,10 @@ before_deploy:
 
 deploy:
   - provider: script
-    script: 'yarn lerna:publish -y'
+    script: 'yarn lerna:publish --yes'
     skip_cleanup: true
     on:
-      tags: true
+      branch: master
   - provider: script
     script: 'travis_wait yarn deploy'
     skip_cleanup: true
