@@ -1,6 +1,7 @@
 const config = require('./index');
 
 describe('infura config', () => {
+  let env;
   /**
    * Sets the test environment variables
    *
@@ -8,17 +9,22 @@ describe('infura config', () => {
    */
   function setEnv(network) {
     process.env.INFURA_API_KEY = 'test-value';
+
     if (network) {
       process.env.INFURA_NETWORK = network;
+    } else {
+      delete process.env.INFURA_NETWORK;
     }
   }
 
   beforeAll(() => {
+    env = JSON.parse(JSON.stringify(process.env));
+
     process.env.NODE_CONFIG_ENV = 'infura';
   });
 
   afterAll(() => {
-    delete process.env.NODE_CONFIG_ENV;
+    process.env = env;
   });
 
   afterEach(() => {
