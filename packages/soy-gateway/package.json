@@ -16,7 +16,7 @@
     "aws:package": "./aws/package.sh",
     "lambda:build": "rm -rf ./build/lambdas && lambda-tools-build -s soy-edge -n 8.10 -w scripts/transformWebpack -o ./build/lambdas src/lambdas",
     "deploy": "yarn lambda:build && yarn aws:package && yarn aws:deploy",
-    "test": "jest",
+    "test": "NODE_CONFIG_ENV=ganache jest",
     "jest": "jest"
   },
   "bugs": {
