@@ -372,7 +372,7 @@ Included are directions for coding standards, and notes on development.
 [soy-contracts]: https://github.com/ConsenSys/web3studio-soy/tree/master/packages/soy-contracts
 [soy-gateway]: https://github.com/ConsenSys/web3studio-soy/tree/master/packages/soy-gateway
 [soy-core]: https://github.com/ConsenSys/web3studio-soy/tree/master/packages/soy-core
-[license]: https://github.com/ConsenSys/web3studio-soy/blob/master/packages/soy-core/LICENSE
+[license]: https://github.com/ConsenSys/web3studio-soy/blob/master/LICENSE
 [contributing]: https://github.com/ConsenSys/web3studio-soy/blob/master/packages/soy-core/CONTRIBUTING.md
 [truffle-contract]: https://github.com/trufflesuite/truffle/tree/next/packages/truffle-contract
 [web3studio.eth.soy]: https://web3studio.eth.soy
